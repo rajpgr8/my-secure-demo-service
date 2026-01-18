@@ -38,7 +38,7 @@ This project implements a **Defense-in-Depth** strategy, ensuring that security 
 
 ## 📂 Repository Structure
 
-\`\`\`text
+```text
 .
 ├── app/                     # Source Code
 │   ├── main.go              # Application entrypoint (handles SIGTERM)
@@ -50,9 +50,8 @@ This project implements a **Defense-in-Depth** strategy, ensuring that security 
 │   └── falco-rules.yaml     # Falco rules for Distroless anomalies
 ├── Dockerfile               # Multi-stage build definition
 └── Makefile                 # Automation for the "Seamless Loop"
-\`\`\`
 
----
+```
 
 ## 🚀 Quick Start
 
@@ -65,15 +64,15 @@ This project implements a **Defense-in-Depth** strategy, ensuring that security 
 
 ### 1. Initialize Keys
 Run this **once** to generate your signing keys (\`cosign.key\` and \`cosign.pub\`).
-\`\`\`bash
+```bash
 make keygen
-\`\`\`
+```
 
 ### 2. The "Seamless Loop" Build
 Run the full pipeline. This will **Build -> Catalog -> Scan -> Sign**.
-\`\`\`bash
+```bash
 make all
-\`\`\`
+```
 
 > **Note:** The build will **fail** if \`Trivy\` detects CRITICAL vulnerabilities. This is a deliberate "Security Gate."
 
@@ -84,7 +83,7 @@ make all
 ### 1. Debugging (Ephemeral Containers)
 Since you cannot SSH into the container, use **Kubernetes Ephemeral Containers** to debug.
 
-\`\`\`bash
+```bash
 # Attach a debug shell (alpine) to the running pod
 kubectl debug -it <pod-name> \\
   --image=nicolaka/netshoot \\
@@ -93,7 +92,7 @@ kubectl debug -it <pod-name> \\
 
 # Access files via the shared process namespace
 cd /proc/1/root/
-\`\`\`
+```
 
 ### 2. Network Firewall (Zero Trust)
 The \`k8s/network-policy.yaml\` enforces a **Default Deny** stance.
