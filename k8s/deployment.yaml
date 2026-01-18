@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-secure-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-secure-service
+  template:
+    metadata:
+      labels:
+        app: my-secure-service
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: app
+        image: my-registry/my-secure-service:latest
+        ports:
+        - containerPort: 8080
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]

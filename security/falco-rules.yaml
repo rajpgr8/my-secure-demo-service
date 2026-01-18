@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: distroless-falco-rules
+data:
+  custom-rules.yaml: |
+    - rule: Distroless Anomaly - Unexpected Process
+      desc: Detect any process that isn't the main binary
+      condition: >
+        container.image.repository startswith "my-registry/my-secure-service" and 
+        spawned_process and 
+        not proc.name = "myapp"
+      output: "Security Alert: Process %proc.name spawned in Distroless container!"
+      priority: CRITICAL

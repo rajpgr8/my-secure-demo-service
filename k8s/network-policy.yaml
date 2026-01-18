@@ -1,0 +1,30 @@
+# 1. Default Deny
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress", "Egress"]
+---
+# 2. Allow Specific
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-app-logic
+spec:
+  podSelector:
+    matchLabels:
+      app: my-secure-service
+  policyTypes: ["Ingress", "Egress"]
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports: [{port: 8080, protocol: TCP}]
+  egress:
+  - to: [{namespaceSelector: {matchLabels: {name: kube-system}}}]
+    ports: [{port: 53, protocol: UDP}]
+  - to: [{podSelector: {matchLabels: {app: postgres-db}}}]
+    ports: [{port: 5432, protocol: TCP}]
